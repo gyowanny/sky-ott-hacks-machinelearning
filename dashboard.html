@@ -1,0 +1,31 @@
+<html>
+
+
+    <body>
+        <p id="status"></p>
+
+        <script>
+            var sleep = time => new Promise(resolve => setTimeout(resolve, time));
+            var poll = (promiseFn, time) => promiseFn().then(
+                    sleep(time).then(() => poll(promiseFn, time)));
+
+            // Greet the World every second
+            poll(() => new Promise(() => loadStatus()), 5000);
+
+            function loadStatus() {
+                console.log("reading status...");
+                var xhttp = new XMLHttpRequest();
+                xhttp.onreadystatechange = function() {
+                    console.log(this.responseText);
+                    if (this.readyState == 4 && this.status == 200) {
+                        document.getElementById("status").innerHTML = this.responseText;
+                    }
+                };
+                xhttp.open("GET", "http://localhost:8080/status", true);
+                xhttp.send();
+            }
+
+
+        </script>
+    </body>
+</html>
