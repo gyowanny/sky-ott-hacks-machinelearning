@@ -1,4 +1,9 @@
 ---
+logging:
+  level: INFO
+  loggers:
+    com.sky.hackday: DEBUG
+
 applications:
   - VOD
   - Live
