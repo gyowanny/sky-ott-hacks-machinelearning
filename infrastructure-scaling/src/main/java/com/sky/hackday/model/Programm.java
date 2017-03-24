@@ -16,8 +16,7 @@ public class Programm {
     private int recomendedVodNodes;
 
 
-
-    public Programm(String title, Date date){
+    public Programm(String title, Date date) {
         this.setTitle(title);
         this.setPlayingDate(date);
     }
@@ -78,4 +77,22 @@ public class Programm {
     public void setRecomendedVodNodes(int recomendedVodNodes) {
         this.recomendedVodNodes = recomendedVodNodes;
     }
+
+    public String toString() {
+
+
+        return "========================================================\n"+
+
+                "Programm Title: " + this.getTitle() + "\n" +
+                "Programm Play Time: " + this.getPlayingDate() + "\n" +
+
+
+                "Number of expected Viewers = " + getPredictedViewers() + "\n" +
+                "Number of recomended live nodes = " + getRecomendedLiveNodes() + "\n" +
+                "Number of recomended vod nodes = " + getRecomendedVodNodes() + "\n" +
+                "Number of recomended download nodes = " + getRecomendedDownloadNodes() + "\n" +
+                "Number of recomended preview nodes = " + getRecomendedPreviewNodes() + "\n" + "\n";
+
+    }
+
 }

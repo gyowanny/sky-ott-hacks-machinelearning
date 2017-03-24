@@ -6,6 +6,7 @@ import com.sky.hackday.model.ProgrammsSchedule;
 import com.sky.hackday.model.Trends;
 import com.sky.hackday.utils.GenericHelper;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 
@@ -19,34 +20,46 @@ public class Predictor {
 
         HashMap<Date, Programm> schedule = ProgrammsSchedule.getProgrammsSchedule();
         for (Programm programm : schedule.values()) {
-                predictTraffic(programm);
+            predictTraffic(programm);
         }
     }
 
 
     private static void predictTraffic(Programm programm) {
 
-       try{ Trends programmTrends = GenericHelper.getTrends(programm.getTitle());
-        int average = 0;
+        try {
+            Trends programmTrends = GenericHelper.getTrends(programm.getTitle());
+            double average = 0;
+            Date currentDate = Calendar.getInstance().getTime();
 
-        for (int trend : programmTrends.trendsByDate.values()) {
-            average += trend;
+            long daysToPlay = programm.getPlayingDate().getTime() / 1000 / 60 / 60 / 24 - currentDate.getTime() / 1000 / 60 / 60 / 24;
+
+            for (Date dateTrendCaptured : programmTrends.trendsByDate.keySet()) {
+
+
+                long daysTrendCaptured = currentDate.getTime() / 1000 / 60 / 60 / 24 - dateTrendCaptured.getTime() / 1000 / 60 / 60 / 24;
+
+                double watage = (double)(100 - (26 - (daysToPlay - daysTrendCaptured))) / 100;
+
+                average += programmTrends.trendsByDate.get(dateTrendCaptured) * watage;
+
+
+            }
+            average = average / 25;
+
+
+            programm.setPredictedViewers((int)( average * 999999));
+            int nodes = (int) average / 2;
+            nodes = nodes < 3 ? 3 : nodes;
+            programm.setRecomendedLiveNodes(nodes);
+            programm.setRecomendedDownloadNodes(nodes / 3);
+            programm.setRecomendedPreviewNodes(nodes / 4);
+            programm.setRecomendedVodNodes(nodes / 2);
+            System.out.println(programm.toString());
+        } catch (Exception e) {
+            e.printStackTrace();
 
         }
-        average = average / 30;
-        programm.setPredictedViewers(average * 999999);
-        int nodes = average / 2;
-        nodes = nodes < 3 ? 3 : nodes;
-        programm.setPredictedViewers(average);
-        programm.setRecomendedLiveNodes(nodes);
-        programm.setRecomendedDownloadNodes(nodes/2);
-        programm.setRecomendedPreviewNodes(nodes/4);
-        programm.setRecomendedVodNodes(nodes/3);
-           System.out.println(programm.getTitle() + " Prediction is performed for this programm");
-    }catch(Exception e){
-e.printStackTrace();
-
-    }
 
     }
 }
