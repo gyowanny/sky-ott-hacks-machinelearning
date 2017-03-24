@@ -103,8 +103,8 @@
                                     <div class="col-xs-5">
                                         <div class="numbers">
                                             <p>VOD</p>
-                                            <span class="stats">Cap&nbsp;&nbsp;&nbsp;</span><span id="vod-capacity">23</span><br>
-                                            <span class="stats">Load&nbsp;</span><span id="vod-capacity">10</span>%
+                                            <span class="stats">Cap&nbsp;&nbsp;&nbsp;</span><span id="vod-capacity">0</span><br>
+                                            <span class="stats">Load&nbsp;</span><span id="vod-load">0</span>%
                                         </div>
                                     </div>
                                 </div>
@@ -130,8 +130,8 @@
                                     <div class="col-xs-7">
                                         <div class="numbers">
                                             <p>Live</p>
-                                            <span class="stats">Cap&nbsp;&nbsp;&nbsp;</span><span id="live-capacity">40</span>
-                                            <span class="stats">Load&nbsp;</span><span id="vod-capacity">10</span>%
+                                            <span class="stats">Cap&nbsp;&nbsp;&nbsp;</span><span id="live-capacity">0</span>
+                                            <span class="stats">Load&nbsp;</span><span id="live-load">0</span>%
                                         </div>
                                     </div>
                                 </div>
@@ -157,8 +157,8 @@
                                     <div class="col-xs-7">
                                         <div class="numbers">
                                             <p>Download</p>
-                                            <span class="stats">Cap&nbsp;&nbsp;&nbsp;</span><span id="download-capacity">10</span>
-                                            <span class="stats">Load&nbsp;</span><span id="vod-capacity">10</span>%
+                                            <span class="stats">Cap&nbsp;&nbsp;&nbsp;</span><span id="download-capacity">0</span>
+                                            <span class="stats">Load&nbsp;</span><span id="download-load">0</span>%
                                         </div>
                                     </div>
                                 </div>
@@ -184,8 +184,8 @@
                                     <div class="col-xs-7">
                                         <div class="numbers">
                                             <p>Preview</p>
-                                            <span class="stats">Cap&nbsp;&nbsp;&nbsp;</span><span id="preview-capacity">23</span>
-                                            <span class="stats">Load&nbsp;</span><span id="vod-capacity">10</span>%
+                                            <span class="stats">Cap&nbsp;&nbsp;&nbsp;</span><span id="preview-capacity">0</span>
+                                            <span class="stats">Load&nbsp;</span><span id="preview-load">0</span>%
                                         </div>
                                     </div>
                                 </div>
@@ -372,56 +372,57 @@
         var time = new Date;
 
         var updateChart = function (data) {
+            if (!data) return;
 
             console.log(data);
             //transform json in an array of instances per app
             var map = new Object();
-            if (data) {
-                $.each(data, function (i, item) {
-                    var subMap = new Object();
-                    subMap['vod'] = item.recomendedVodNodes1;
-                    subMap['live'] = item.recomendedLiveNodes;
-                    subMap['download'] = item.recomendedDownloadNodes;
-                    subMap['preview'] = item.recomendedPreviewNodes;
-                    map[item.playingDate] = subMap;
-
-                });
-            } else {
-                var subMap = new Object();
-                subMap['vod'] = 0;
-                subMap['live'] = 0;
-                subMap['download'] = 0;
-                subMap['preview'] = 0;
-                map[new Date()] = subMap;
-            }
+//            if (data) {
+//                $.each(data, function (i, item) {
+//                    var subMap = new Object();
+//                    subMap['vod'] = item.recomendedVodNodes;
+//                    subMap['live'] = item.recomendedLiveNodes;
+//                    subMap['download'] = item.recomendedDownloadNodes;
+//                    subMap['preview'] = item.recomendedPreviewNodes;
+//                    map[item.playingDate] = subMap;
+//
+//                });
+//            } else {
+//                var subMap = new Object();
+//                subMap['vod'] = 0;
+//                subMap['live'] = 0;
+//                subMap['download'] = 0;
+//                subMap['preview'] = 0;
+//                map[new Date()] = subMap;
+//            }
 
             // add interval duration to time
             time.setTime(time.getTime() + updateInterval);
 
             console.log(map);
 
-            Object.keys(map).forEach(function(key) {
+            $.each(data, function (i, item) {
                 // adding random value and rounding it to two digits.
-                yValue1 = map[key]['vod'];
-                yValue2 = map[key]['live'];
-                yValue3 = map[key]['download'];
-                yValue4 = map[key]['preview'];
+                yValue1 = item.recomendedVodNodes;
+                yValue2 = item.recomendedLiveNodes;
+                yValue3 = item.recomendedDownloadNodes;
+                yValue4 = item.recomendedPreviewNodes;
 
                 // pushing the new values
                 dataPoints1.push({
-                    x: time.getTime(),
+                    x: item.playingDate,
                     y: yValue1
                 });
                 dataPoints2.push({
-                    x: time.getTime(),
+                    x: item.playingDate,
                     y: yValue2
                 });
                 dataPoints3.push({
-                    x: time.getTime(),
+                    x: item.playingDate,
                     y: yValue3
                 });
                 dataPoints4.push({
-                    x: time.getTime(),
+                    x: item.playingDate,
                     y: yValue4
                 });
 
@@ -434,43 +435,33 @@
 
             chart.render();
 
-            currentDataPoints++;
-            if (currentDataPoints > dataPointsPerPage) {
-                currentDataPoints = 0;
-                dataPoints1.shift();
-                dataPoints2.shift();
-                dataPoints3.shift();
-                dataPoints4.shift();
-            }
+//            currentDataPoints++;
+//            if (currentDataPoints > dataPointsPerPage) {
+//                currentDataPoints = 0;
+//                dataPoints1.shift();
+//                dataPoints2.shift();
+//                dataPoints3.shift();
+//                dataPoints4.shift();
+//            }
 
         };
 
         var updateCards = function (data) {
             $.each(data, function (i, item) {
-                var id = "#" + item.app.toLowerCase() + "-capacity";
+                var idCapacity = "#" + item.app.toLowerCase() + "-capacity";
+                var idAverageLoad = "#" + item.app.toLowerCase() + "-load";
                 try {
-                    $(id).text(item.instances);
+                    $(idCapacity).text(item.instances);
+                    $(idAverageLoad).text(item.averageLoad);
                 } catch (exception) {
-                    $(id).text(0);
+                    $(idCapacity).text(0);
+                    $(idAverageLoad).text(0);
+
                 }
             });
         }
 
-        var updateDashboard = function () {
-            $.ajax({
-                type: 'GET',
-                url: "http://localhost:8080/infrastructure/current",
-                async: true,
-                beforeSend: function (xhr) {
-                    if (xhr && xhr.overrideMimeType) {
-                        xhr.overrideMimeType('application/json;charset=utf-8');
-                    }
-                },
-                dataType: 'json',
-                success: function (data) {
-                    updateCards(data);
-                }
-            });
+        var loadPredicted = function () {
             $.ajax({
                 type: 'GET',
                 url: "http://localhost:8080/infrastructure/predicted",
@@ -487,11 +478,29 @@
             });
         }
 
-        updateChart();
+        var loadCurrent = function () {
+            $.ajax({
+                type: 'GET',
+                url: "http://localhost:8080/infrastructure/current",
+                async: true,
+                beforeSend: function (xhr) {
+                    if (xhr && xhr.overrideMimeType) {
+                        xhr.overrideMimeType('application/json;charset=utf-8');
+                    }
+                },
+                dataType: 'json',
+                success: function (data) {
+                    updateCards(data);
+                }
+            });
+
+        }
+
+        loadPredicted();
 
         // update chart after specified time.
         setInterval(function () {
-            updateDashboard();
+            loadCurrent();
         }, updateInterval);
 
         demo.initChartist();
