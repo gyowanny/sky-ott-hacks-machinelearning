@@ -1,5 +1,6 @@
 package com.sky.hackday;
 
+import com.sky.hackday.resource.CorsFilter;
 import com.sky.hackday.resource.InfrastructureResource;
 import io.dropwizard.Application;
 import io.dropwizard.setup.Environment;
@@ -13,6 +14,8 @@ public class App extends Application<InfrastructureScalingConfig> {
         InfrastructureResource infrastructureResource = new InfrastructureResource();
 
         environment.jersey().register(infrastructureResource);
+
+        CorsFilter.insecure(environment);
     }
 
     @Override
