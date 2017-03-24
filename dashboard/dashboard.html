@@ -286,7 +286,7 @@
 
         var xVal = 0;
         var yVal = 100;
-        var updateInterval = 100;
+        var updateInterval = 1000;
         var dataLength = 500; // number of dataPoints visible at any point
 
         var updateChart = function (count) {
@@ -312,19 +312,27 @@
 
         var updateCards = function () {
             $.ajax({
-                url: "http://localhost:8080/infrastructure"
-            }).success(function(data){
-                var json = $.parseJSON(data);
-                $.each(json, function(i, item) {
-                    var id = "#"+item.app+"-capacity";
-                    try{
-                        $(id).text(item.instances);
-                    }catch(exception) {
-                        $(id).text(0);
+                type: 'GET',
+                url: "http://localhost:8080/infrastructure",
+                async: true,
+                beforeSend: function (xhr) {
+                    if (xhr && xhr.overrideMimeType) {
+                        xhr.overrideMimeType('application/json;charset=utf-8');
                     }
-                });
-            }).done(function() {
-
+                },
+                dataType: 'json',
+                success: function (data) {
+                    console.log(data);
+                    $.each(data, function (i, item) {
+                        var id = "#" + item.app.toLowerCase() + "-capacity";
+                        console.log(id);
+                        try {
+                            $(id).text(item.instances);
+                        } catch (exception) {
+                            $(id).text(0);
+                        }
+                    });
+                }
             });
         }
 
