@@ -272,45 +272,168 @@
 <script type="text/javascript">
     $(document).ready(function () {
 
-        var dps = []; // dataPoints
+        // dataPoints
+        var dataPoints1 = [];
+        var dataPoints2 = [];
+        var dataPoints3 = [];
+        var dataPoints4 = [];
+        var chartType = "stepLine";
 
         var chart = new CanvasJS.Chart("chartContainer", {
+            zoomEnabled: true,
             title: {
-                text: ""
+                text: "Infrastructure Scaling Timeline"
             },
-            data: [{
-                type: "line",
-                dataPoints: dps
-            }]
+            toolTip: {
+                shared: true
+
+            },
+            legend: {
+                verticalAlign: "top",
+                horizontalAlign: "center",
+                fontSize: 14,
+                fontWeight: "bold",
+                fontFamily: "calibri",
+                fontColor: "dimGrey"
+            },
+            axisX: {
+                title: "chart updates every 3 secs"
+            },
+            axisY: {
+                prefix: '',
+                includeZero: false
+            },
+            data: [
+                {
+                    // dataSeries1
+                    type: chartType,
+                    markerSize: 0,
+                    xValueType: "dateTime",
+                    showInLegend: true,
+                    name: "VOD",
+                    dataPoints: dataPoints1
+                },
+                {
+                    // dataSeries2
+                    type: chartType,
+                    markerSize: 0,
+                    xValueType: "dateTime",
+                    showInLegend: true,
+                    name: "Live",
+                    dataPoints: dataPoints2
+                },
+                {
+                    // dataSeries2
+                    type: chartType,
+                    markerSize: 0,
+                    xValueType: "dateTime",
+                    showInLegend: true,
+                    name: "Download",
+                    dataPoints: dataPoints3
+                },
+                {
+                    // dataSeries2
+                    type: chartType,
+                    markerSize: 0,
+                    xValueType: "dateTime",
+                    showInLegend: true,
+                    name: "Preview",
+                    dataPoints: dataPoints4
+                }
+            ],
+            legend: {
+                cursor: "pointer",
+                itemclick: function (e) {
+                    if (typeof(e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
+                        e.dataSeries.visible = false;
+                    }
+                    else {
+                        e.dataSeries.visible = true;
+                    }
+                    chart.render();
+                }
+            }
         });
 
-        var xVal = 0;
-        var yVal = 100;
-        var updateInterval = 1000;
-        var dataLength = 500; // number of dataPoints visible at any point
+        var updateInterval = 3000;
+        // initial value
+        var yValue1 = 640;
+        var yValue2 = 604;
+        var yValue3 = 300;
+        var yValue4 = 435;
 
-        var updateChart = function (count) {
-            count = count || 1;
-            // count is number of times loop runs to generate random dataPoints.
+        var time = new Date;
 
-            for (var j = 0; j < count; j++) {
-                yVal = yVal + Math.round(5 + Math.random() * (-5 - 5));
-                dps.push({
-                    x: xVal,
-                    y: yVal
+        var updateChart = function (data) {
+
+            //transform json in an array of instances per app
+            var map = new Object();
+            if (data) {
+                $.each(data, function (i, item) {
+                    map[item.app.toLowerCase()] = item.instances;
                 });
-                xVal++;
+            } else {
+                map['vod'] = 0;
+                map['live'] = 0;
+                map['download'] = 0;
+                map['preview'] = 0;
             }
-            ;
-            if (dps.length > dataLength) {
-                dps.shift();
-            }
+
+            // add interval duration to time
+            time.setTime(time.getTime() + updateInterval);
+
+            // generating random values
+            var deltaY1 = map['vod'];
+            var deltaY2 = map['live'];
+            var deltaY3 = map['download'];
+            var deltaY4 = map['preview'];
+
+            // adding random value and rounding it to two digits.
+            yValue1 = map['vod'];
+            yValue2 = map['live'];
+            yValue3 = map['download'];
+            yValue4 = map['preview'];
+
+            // pushing the new values
+            dataPoints1.push({
+                x: time.getTime(),
+                y: yValue1
+            });
+            dataPoints2.push({
+                x: time.getTime(),
+                y: yValue2
+            });
+            dataPoints3.push({
+                x: time.getTime(),
+                y: yValue3
+            });
+            dataPoints4.push({
+                x: time.getTime(),
+                y: yValue4
+            });
+
+            // updating legend text with  updated with y Value
+            chart.options.data[0].legendText = " VOD " + yValue1;
+            chart.options.data[1].legendText = " Live " + yValue2;
+            chart.options.data[2].legendText = " Download " + yValue3;
+            chart.options.data[3].legendText = " Preview " + yValue4;
 
             chart.render();
 
         };
 
-        var updateCards = function () {
+        var updateCards = function (data) {
+            $.each(data, function (i, item) {
+                var id = "#" + item.app.toLowerCase() + "-capacity";
+                try {
+                    $(id).text(item.instances);
+                } catch (exception) {
+                    $(id).text(0);
+                }
+            });
+        }
+
+        var updateDashboard = function () {
             $.ajax({
                 type: 'GET',
                 url: "http://localhost:8080/infrastructure",
@@ -323,26 +446,14 @@
                 dataType: 'json',
                 success: function (data) {
                     console.log(data);
-                    $.each(data, function (i, item) {
-                        var id = "#" + item.app.toLowerCase() + "-capacity";
-                        console.log(id);
-                        try {
-                            $(id).text(item.instances);
-                        } catch (exception) {
-                            $(id).text(0);
-                        }
-                    });
+                    updateChart(data);
+                    updateCards(data);
                 }
             });
+
         }
 
-        var updateDashboard = function() {
-            updateChart();
-            updateCards();
-        }
-
-        // generates first set of dataPoints
-        updateChart(dataLength);
+        updateChart();
 
         // update chart after specified time.
         setInterval(function () {
