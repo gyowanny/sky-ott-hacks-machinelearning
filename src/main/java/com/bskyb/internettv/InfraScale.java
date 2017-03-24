@@ -10,11 +10,11 @@ public class InfraScale {
 
     private Executor executor = Executors.newSingleThreadExecutor();
 
-    private Map<String,String> statusMap = new LinkedHashMap<>();
+    private Map<String, String> statusMap = new LinkedHashMap<>();
 
     public InfraScale() {
         IntStream.range(1, 10)
-                .forEach(index -> statusMap.put("extra-instance-"+index, "DOWN"));
+                .forEach(index -> statusMap.put("extra-instance-" + index, "DOWN"));
     }
 
     public String start() {
@@ -26,7 +26,7 @@ public class InfraScale {
         return "STOPPED";
     }
 
-    public synchronized Map<String,String> getStatus() throws Exception {
+    public synchronized Map<String, String> getStatus() throws Exception {
         return statusMap;
     }
 
@@ -35,7 +35,7 @@ public class InfraScale {
 
         private final Map<String, String> scaleMap;
 
-        private ScaleTask(Map<String,String> scaleMap) {
+        private ScaleTask(Map<String, String> scaleMap) {
             this.scaleMap = scaleMap;
         }
 
@@ -60,7 +60,7 @@ public class InfraScale {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-            } while(keepGoing);
+            } while (keepGoing);
         }
     }
 }

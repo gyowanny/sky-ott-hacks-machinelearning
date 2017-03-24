@@ -1,6 +1,10 @@
 package com.bskyb.internettv;
 
+import com.bskyb.internettv.io.FileHelper;
+import com.bskyb.internettv.model.ProgrammsSchedule;
+import com.bskyb.internettv.process.Predictor;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sun.org.apache.xalan.internal.xslt.Process;
 import spark.Request;
 
 import static spark.Spark.*;
@@ -12,6 +16,18 @@ public class Main {
     private static final ObjectMapper jsonMapper = new ObjectMapper();
 
     public static void main(String[] args) {
+        analyseAndPredict();
+        //displayDashboard();
+    }
+
+    private static void analyseAndPredict() {
+
+        ProgrammsSchedule.init();
+        FileHelper.readTrends("trends\\Girls.csv");
+        Predictor.predict();
+    }
+
+    private static void displayDashboard() {
         port(8080);
 
         enableCORS("*", "*", "Origin, X-Requested-With, Content-Type, Accept");
