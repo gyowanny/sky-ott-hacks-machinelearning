@@ -1,6 +1,7 @@
-package com.sky.hackday;
+package com.sky.hackday.infrastructure;
 
 import com.sky.hackday.infrastructure.Infrastructure;
+import com.sky.hackday.infrastructure.InfrastructureScaling;
 import com.sky.hackday.recommendations.Recommendations;
 import org.junit.Before;
 import org.junit.Test;

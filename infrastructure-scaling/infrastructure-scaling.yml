@@ -1,2 +1,6 @@
 ---
-name: infrastructure-scaling
+applications:
+  - VOD
+  - Live
+  - Download
+  - Preview

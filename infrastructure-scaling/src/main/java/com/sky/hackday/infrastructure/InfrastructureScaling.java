@@ -1,6 +1,5 @@
-package com.sky.hackday;
+package com.sky.hackday.infrastructure;
 
-import com.sky.hackday.infrastructure.Infrastructure;
 import com.sky.hackday.recommendations.Recommendations;
 
 public class InfrastructureScaling {

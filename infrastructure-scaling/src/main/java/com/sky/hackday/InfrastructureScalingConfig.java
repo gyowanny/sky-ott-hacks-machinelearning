@@ -2,19 +2,21 @@ package com.sky.hackday;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.dropwizard.Configuration;
-import org.hibernate.validator.constraints.NotEmpty;
+
+import javax.validation.constraints.NotNull;
+import java.util.List;
 
 public class InfrastructureScalingConfig extends Configuration {
-    @NotEmpty
-    private String name;
+    @NotNull
+    private List<String> applications;
 
     @JsonProperty
-    public String getName() {
-        return name;
+    public List<String> getApplications() {
+        return applications;
     }
 
     @JsonProperty
-    public void setName(String name) {
-        this.name = name;
+    public void setApplications(List<String> applications) {
+        this.applications = applications;
     }
 }

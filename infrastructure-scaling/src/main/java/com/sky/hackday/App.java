@@ -1,5 +1,7 @@
 package com.sky.hackday;
 
+import com.sky.hackday.infrastructure.Infrastructure;
+import com.sky.hackday.infrastructure.MockInfrastructure;
 import com.sky.hackday.resource.CorsFilter;
 import com.sky.hackday.resource.InfrastructureResource;
 import io.dropwizard.Application;
@@ -11,11 +13,15 @@ public class App extends Application<InfrastructureScalingConfig> {
     }
 
     public void run(InfrastructureScalingConfig config, Environment environment) throws Exception {
-        InfrastructureResource infrastructureResource = new InfrastructureResource();
+        InfrastructureResource infrastructureResource = new InfrastructureResource(infrastructure(config));
 
         environment.jersey().register(infrastructureResource);
 
         CorsFilter.insecure(environment);
+    }
+
+    private static Infrastructure infrastructure(InfrastructureScalingConfig config) {
+        return new MockInfrastructure(config.getApplications());
     }
 
     @Override
