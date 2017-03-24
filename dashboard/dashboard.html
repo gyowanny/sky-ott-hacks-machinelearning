@@ -373,51 +373,64 @@
 
         var updateChart = function (data) {
 
+            console.log(data);
             //transform json in an array of instances per app
             var map = new Object();
             if (data) {
                 $.each(data, function (i, item) {
-                    map[item.app.toLowerCase()] = item.instances;
+                    var subMap = new Object();
+                    subMap['vod'] = item.recomendedVodNodes1;
+                    subMap['live'] = item.recomendedLiveNodes;
+                    subMap['download'] = item.recomendedDownloadNodes;
+                    subMap['preview'] = item.recomendedPreviewNodes;
+                    map[item.playingDate] = subMap;
+
                 });
             } else {
-                map['vod'] = 0;
-                map['live'] = 0;
-                map['download'] = 0;
-                map['preview'] = 0;
+                var subMap = new Object();
+                subMap['vod'] = 0;
+                subMap['live'] = 0;
+                subMap['download'] = 0;
+                subMap['preview'] = 0;
+                map[new Date()] = subMap;
             }
 
             // add interval duration to time
             time.setTime(time.getTime() + updateInterval);
 
-            // adding random value and rounding it to two digits.
-            yValue1 = map['vod'];
-            yValue2 = map['live'];
-            yValue3 = map['download'];
-            yValue4 = map['preview'];
+            console.log(map);
 
-            // pushing the new values
-            dataPoints1.push({
-                x: time.getTime(),
-                y: yValue1
-            });
-            dataPoints2.push({
-                x: time.getTime(),
-                y: yValue2
-            });
-            dataPoints3.push({
-                x: time.getTime(),
-                y: yValue3
-            });
-            dataPoints4.push({
-                x: time.getTime(),
-                y: yValue4
-            });
+            Object.keys(map).forEach(function(key) {
+                // adding random value and rounding it to two digits.
+                yValue1 = map[key]['vod'];
+                yValue2 = map[key]['live'];
+                yValue3 = map[key]['download'];
+                yValue4 = map[key]['preview'];
 
-            // updating legend text with  updated with y Value
-            chart.options.data[0].legendText = " VOD " + yValue1;
-            chart.options.data[1].legendText = " Live " + yValue2;
-            chart.options.data[2].legendText = " Download " + yValue3;
-            chart.options.data[3].legendText = " Preview " + yValue4;
+                // pushing the new values
+                dataPoints1.push({
+                    x: time.getTime(),
+                    y: yValue1
+                });
+                dataPoints2.push({
+                    x: time.getTime(),
+                    y: yValue2
+                });
+                dataPoints3.push({
+                    x: time.getTime(),
+                    y: yValue3
+                });
+                dataPoints4.push({
+                    x: time.getTime(),
+                    y: yValue4
+                });
+
+                // updating legend text with  updated with y Value
+                chart.options.data[0].legendText = " VOD " + yValue1;
+                chart.options.data[1].legendText = " Live " + yValue2;
+                chart.options.data[2].legendText = " Download " + yValue3;
+                chart.options.data[3].legendText = " Preview " + yValue4;
+            });
 
             chart.render();
 
@@ -446,7 +459,7 @@
         var updateDashboard = function () {
             $.ajax({
                 type: 'GET',
-                url: "http://localhost:8080/infrastructure",
+                url: "http://localhost:8080/infrastructure/current",
                 async: true,
                 beforeSend: function (xhr) {
                     if (xhr && xhr.overrideMimeType) {
@@ -455,12 +468,23 @@
                 },
                 dataType: 'json',
                 success: function (data) {
-                    console.log(data);
-                    updateChart(data);
                     updateCards(data);
                 }
             });
-
+            $.ajax({
+                type: 'GET',
+                url: "http://localhost:8080/infrastructure/predicted",
+                async: true,
+                beforeSend: function (xhr) {
+                    if (xhr && xhr.overrideMimeType) {
+                        xhr.overrideMimeType('application/json;charset=utf-8');
+                    }
+                },
+                dataType: 'json',
+                success: function (data) {
+                    updateChart(data);
+                }
+            });
         }
 
         updateChart();

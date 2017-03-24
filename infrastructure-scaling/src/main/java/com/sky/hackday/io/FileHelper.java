@@ -16,7 +16,7 @@ import java.util.Properties;
 
 public class FileHelper {
 
-    private static String configPath = "C:\\Sky\\hackday\\project\\sky-tot-hacks-machinelearning\\src\\main\\resources\\";
+    private static String configPath = System.getProperty("user.dir") + "/src/main/resources/";
 
     public static Map<String, Trends> trendsMap = new HashMap<String, Trends>();
 
@@ -106,7 +106,6 @@ public class FileHelper {
 
 
     public static void readAllTrends() {
-
 
         for (final File fileEntry : new File(configPath + "trends").listFiles()) {
             readTrends(fileEntry.getAbsolutePath(), fileEntry.getName());
