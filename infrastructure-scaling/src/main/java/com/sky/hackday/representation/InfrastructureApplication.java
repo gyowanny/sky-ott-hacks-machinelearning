@@ -5,10 +5,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class InfrastructureApplication {
     private String app;
     private int instances;
+    private int averageLoad;
 
-    public InfrastructureApplication(String app, int instances) {
+    public InfrastructureApplication(String app, int instances, int averageLoad) {
         this.app = app;
         this.instances = instances;
+        this.averageLoad = averageLoad;
     }
 
     @JsonProperty
@@ -19,5 +21,10 @@ public class InfrastructureApplication {
     @JsonProperty
     public int getInstances() {
         return instances;
+    }
+
+    @JsonProperty
+    public int getAverageLoad() {
+        return averageLoad;
     }
 }

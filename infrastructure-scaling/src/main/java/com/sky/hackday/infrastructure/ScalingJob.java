@@ -14,9 +14,7 @@ public class ScalingJob implements Runnable {
 
     @Override
     public void run() {
-        applicationsToScale.forEach((app) -> {
-            infrastructureScaling.scale(app);
-        });
+        applicationsToScale.forEach(infrastructureScaling::scale);
     }
 
 }

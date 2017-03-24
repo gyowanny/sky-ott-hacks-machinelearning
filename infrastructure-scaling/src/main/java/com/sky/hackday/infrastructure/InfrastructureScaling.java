@@ -17,7 +17,8 @@ public class InfrastructureScaling {
 
     public void scale(String appName) {
         Integer recommendedInstances = recommendations.getInstances(appName);
-        infrastructure.scale(appName, recommendedInstances);
+        Integer averageLoad = recommendations.getAverageLoad(appName);
+        infrastructure.scale(appName, recommendedInstances, averageLoad);
     }
 
 }

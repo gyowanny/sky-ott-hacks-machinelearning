@@ -1,10 +1,5 @@
 package com.sky.hackday.recommendations;
 
-import com.sky.hackday.model.Programm;
-import com.sky.hackday.model.ProgrammsSchedule;
-
-import java.util.Date;
-import java.util.HashMap;
 import java.util.Random;
 
 public class Recommendations {
@@ -12,5 +7,9 @@ public class Recommendations {
 
     public Integer getInstances(String app) {
         return 15 + random.nextInt(15);
+    }
+
+    public Integer getAverageLoad(String appName) {
+        return random.nextInt(70 - 60 + 1) + 60;
     }
 }

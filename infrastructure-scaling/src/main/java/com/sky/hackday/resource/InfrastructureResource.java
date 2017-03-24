@@ -9,10 +9,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Path("/infrastructure")
@@ -29,16 +26,20 @@ public class InfrastructureResource {
     public List<InfrastructureApplication> getApplications() {
         return infrastructure.getApplications()
                 .stream()
-                .map(app -> new InfrastructureApplication(app, infrastructure.getInstances(app)))
+                .map(app -> new InfrastructureApplication(
+                        app, infrastructure.getInstances(app), infrastructure.getAverageLoad(app))
+                )
                 .collect(Collectors.toList());
     }
 
 
     @GET
     @Path("/predicted")
-    public Collection<Programm> getApplications1() {
+    public List<Programm> getApplications1() {
         HashMap<Date, Programm> schedule = ProgrammsSchedule.getProgrammsSchedule();
-        return schedule.values();
+        List<Programm> programs = new ArrayList<>(schedule.values());
+        Collections.sort(programs, (o1, o2) -> o1.getPlayingDate().compareTo(o2.getPlayingDate()));
+        return programs;
     }
 
 
