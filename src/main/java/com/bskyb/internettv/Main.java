@@ -23,7 +23,7 @@ public class Main {
     private static void analyseAndPredict() {
 
         ProgrammsSchedule.init();
-        FileHelper.readTrends("trends\\Girls.csv");
+        FileHelper.readAllTrends();
         Predictor.predict();
     }
 

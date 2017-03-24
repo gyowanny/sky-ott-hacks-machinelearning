@@ -33,7 +33,7 @@ public class FileHelper {
         try {
             String line = "";
             //Create the file reader
-            fileReader = new BufferedReader(new FileReader(configPath + fileToParse));
+            fileReader = new BufferedReader(new FileReader(fileToParse));
 
             Trends trends = new Trends();
             //Read the file line by line
@@ -42,7 +42,7 @@ public class FileHelper {
                 String[] tokens = line.split(DELIMITER);
                 for (String token : tokens) {
 
-                    trends.trendsByDate.put(new Date(Date.parse(tokens[0])), Integer.parseInt(tokens[1]));
+                    trends.trendsByDate.put(new Date(Date.parse(tokens[0] + " " + "00:00:00")), Integer.parseInt(tokens[1]));
                 }
             }
         } catch (Exception e) {
@@ -105,11 +105,11 @@ public class FileHelper {
     }
 
 
-    private static void raedAllTrends() {
+    public static void readAllTrends() {
 
 
-        for (final File fileEntry : new File("trends").listFiles()) {
-            readTrends(fileEntry.getName());
+        for (final File fileEntry : new File( configPath+ "trends").listFiles()) {
+            readTrends(fileEntry.getAbsolutePath());
         }
 
 
