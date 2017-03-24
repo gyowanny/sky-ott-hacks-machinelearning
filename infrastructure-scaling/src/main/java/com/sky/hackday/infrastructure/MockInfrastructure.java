@@ -6,20 +6,26 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class MockInfrastructure implements Infrastructure {
-    private static final Map<String, Integer> infrastructure = new ConcurrentHashMap<>();
+    private static final Map<String, ApplicationStatistics> infrastructure = new ConcurrentHashMap<>();
 
     public MockInfrastructure(List<String> applications) {
-        applications.forEach(application -> infrastructure.put(application, 0));
+        applications.forEach(application -> infrastructure
+                .put(application, new ApplicationStatistics(application, 0, 0)));
     }
 
     @Override
     public Integer getInstances(String appName) {
-        return infrastructure.get(appName);
+        return infrastructure.get(appName).getInstances();
     }
 
     @Override
-    public void scale(String appName, int instances) {
-        write(appName, instances);
+    public Integer getAverageLoad(String appName) {
+        return infrastructure.get(appName).getAverageLoad();
+    }
+
+    @Override
+    public void scale(String appName, int instances, int averageLoad) {
+        write(appName, instances, averageLoad);
     }
 
     @Override
@@ -27,7 +33,7 @@ public class MockInfrastructure implements Infrastructure {
         return infrastructure.keySet();
     }
 
-    private void write(String appName, int instances) {
-        infrastructure.put(appName, instances);
+    private void write(String appName, int instances, int averageLoad) {
+        infrastructure.put(appName, new ApplicationStatistics(appName, instances, averageLoad));
     }
 }

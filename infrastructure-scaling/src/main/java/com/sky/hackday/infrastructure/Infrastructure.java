@@ -5,7 +5,9 @@ import java.util.Set;
 public interface Infrastructure {
     Integer getInstances(String appName);
 
-    void scale(String appName, int instances);
+    Integer getAverageLoad(String appName);
+
+    void scale(String appName, int instances, int averageLoad);
 
     Set<String> getApplications();
 }

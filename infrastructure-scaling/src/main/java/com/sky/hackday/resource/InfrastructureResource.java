@@ -29,7 +29,9 @@ public class InfrastructureResource {
     public List<InfrastructureApplication> getApplications() {
         return infrastructure.getApplications()
                 .stream()
-                .map(app -> new InfrastructureApplication(app, infrastructure.getInstances(app)))
+                .map(app -> new InfrastructureApplication(
+                        app, infrastructure.getInstances(app), infrastructure.getAverageLoad(app))
+                )
                 .collect(Collectors.toList());
     }
 
