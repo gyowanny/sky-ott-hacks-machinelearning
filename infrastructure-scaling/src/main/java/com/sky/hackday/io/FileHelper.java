@@ -1,13 +1,12 @@
-package com.bskyb.internettv.io;
+package com.sky.hackday.io;
 
-import com.bskyb.internettv.model.Programm;
-import com.bskyb.internettv.model.Trends;
+import com.sky.hackday.model.Programm;
+import com.sky.hackday.model.Trends;
 
 import java.io.*;
-import java.sql.Date;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-
 import java.util.Properties;
 
 /**
@@ -25,7 +24,7 @@ public class FileHelper {
     private static Map<String, String> properties = new HashMap<String, String>();
 
 
-    public static void readTrends(String fileToParse) {
+    public static void readTrends(String fileToParse, String fileName) {
         BufferedReader fileReader = null;
 
         //Delimiter used in CSV file
@@ -43,6 +42,7 @@ public class FileHelper {
                 for (String token : tokens) {
 
                     trends.trendsByDate.put(new Date(Date.parse(tokens[0] + " " + "00:00:00")), Integer.parseInt(tokens[1]));
+                     trendsMap.put(fileName.toLowerCase().replace(".csv",""),trends);
                 }
             }
         } catch (Exception e) {
@@ -108,14 +108,14 @@ public class FileHelper {
     public static void readAllTrends() {
 
 
-        for (final File fileEntry : new File( configPath+ "trends").listFiles()) {
-            readTrends(fileEntry.getAbsolutePath());
+        for (final File fileEntry : new File(configPath + "trends").listFiles()) {
+            readTrends(fileEntry.getAbsolutePath(), fileEntry.getName());
         }
 
 
     }
 
-    public static void readSchedule(String fileToParse) {
+    public static HashMap<Date, Programm> readSchedule(String fileToParse) {
 
         HashMap<Date, Programm> programmsSchedule = new HashMap<Date, Programm>();
 
@@ -134,7 +134,7 @@ public class FileHelper {
                 String[] tokens = line.split(DELIMITER);
                 for (int i = 1; i <= 4; i++) {
                     String title = tokens[i];
-                    String dateTime = tokens[0] +" " + times[i];
+                    String dateTime = tokens[0] + " " + times[i];
                     Date date = new Date(Date.parse(dateTime));
                     Programm program = new Programm(title, date);
                     programmsSchedule.put(date, program);
@@ -149,7 +149,7 @@ public class FileHelper {
                 e.printStackTrace();
             }
         }
-
+        return programmsSchedule;
     }
 
 

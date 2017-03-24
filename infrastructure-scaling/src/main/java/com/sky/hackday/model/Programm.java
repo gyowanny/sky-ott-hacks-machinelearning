@@ -1,4 +1,4 @@
-package com.bskyb.internettv.model;
+package com.sky.hackday.model;
 
 import java.util.Date;
 

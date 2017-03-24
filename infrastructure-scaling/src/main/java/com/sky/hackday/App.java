@@ -4,6 +4,9 @@ import com.sky.hackday.infrastructure.Infrastructure;
 import com.sky.hackday.infrastructure.InfrastructureScaling;
 import com.sky.hackday.infrastructure.MockInfrastructure;
 import com.sky.hackday.infrastructure.ScalingJob;
+import com.sky.hackday.io.FileHelper;
+import com.sky.hackday.model.ProgrammsSchedule;
+import com.sky.hackday.process.Predictor;
 import com.sky.hackday.recommendations.Recommendations;
 import com.sky.hackday.resource.CorsFilter;
 import com.sky.hackday.resource.InfrastructureResource;
@@ -18,7 +21,15 @@ public class App extends Application<InfrastructureScalingConfig> {
         new App().run(args);
     }
 
+    private static void analyseAndPredict() {
+        ProgrammsSchedule.init();
+        FileHelper.readAllTrends();
+        Predictor.predict();
+    }
+
     public void run(InfrastructureScalingConfig config, Environment environment) throws Exception {
+
+        analyseAndPredict();
         InfrastructureResource infrastructureResource = new InfrastructureResource(infrastructure(config));
 
         environment.jersey().register(infrastructureResource);

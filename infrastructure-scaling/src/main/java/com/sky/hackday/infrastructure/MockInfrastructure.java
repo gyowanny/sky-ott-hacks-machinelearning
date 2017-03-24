@@ -18,12 +18,7 @@ public class MockInfrastructure implements Infrastructure {
     }
 
     @Override
-    public void scaleUp(String appName, int instances) {
-        write(appName, instances);
-    }
-
-    @Override
-    public void scaleDown(String appName, int instances) {
+    public void scale(String appName, int instances) {
         write(appName, instances);
     }
 

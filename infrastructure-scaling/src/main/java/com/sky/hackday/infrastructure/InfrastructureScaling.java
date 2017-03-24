@@ -16,25 +16,8 @@ public class InfrastructureScaling {
     }
 
     public void scale(String appName) {
-        Integer currentInstances = infrastructure.getInstances(appName);
         Integer recommendedInstances = recommendations.getInstances(appName);
-
-        if (recommendedInstances > currentInstances) {
-            int instances = recommendedInstances - currentInstances;
-
-            log(appName, instances);
-            infrastructure.scaleUp(appName, instances);
-        } else {
-            int instances = currentInstances - recommendedInstances;
-
-            log(appName, instances);
-            infrastructure.scaleDown(appName, instances);
-        }
+        infrastructure.scale(appName, recommendedInstances);
     }
-
-    private void log(String appName, int instances) {
-        LOGGER.debug("Scaling {} to {} instances", appName, instances);
-    }
-
 
 }

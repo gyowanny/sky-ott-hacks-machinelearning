@@ -1,12 +1,9 @@
-package com.bskyb.internettv.model;
+package com.sky.hackday.model;
 
-import com.bskyb.internettv.io.FileHelper;
+import com.sky.hackday.io.FileHelper;
 
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Map;
-
-import static com.bskyb.internettv.model.ProgrammsSchedule.getProgrammsSchedule;
 
 /**
  * Created by MKH25 on 24/03/2017.
@@ -16,7 +13,7 @@ public class ProgrammsSchedule {
     private static HashMap<Date, Programm> programmsSchedule = new HashMap<Date,Programm>();
 
     public static void init() {
-        FileHelper.readSchedule("ProgrammSchedule.csv");
+        programmsSchedule = FileHelper.readSchedule("ProgrammSchedule.csv");
 
     }
 

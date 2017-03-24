@@ -1,4 +1,4 @@
-package com.bskyb.internettv;
+package com.sky.hackday;
 
 import java.util.LinkedHashMap;
 import java.util.Map;

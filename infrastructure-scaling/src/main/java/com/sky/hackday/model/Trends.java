@@ -1,8 +1,5 @@
-package com.bskyb.internettv.model;
+package com.sky.hackday.model;
 
-import com.bskyb.internettv.io.FileHelper;
-
-import java.io.File;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
