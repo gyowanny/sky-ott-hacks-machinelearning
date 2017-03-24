@@ -100,10 +100,11 @@
                                             <i class="ti-pulse"></i>
                                         </div>
                                     </div>
-                                    <div class="col-xs-7">
+                                    <div class="col-xs-5">
                                         <div class="numbers">
                                             <p>VOD</p>
-                                            <span id="vod-capacity">23</span>
+                                            <span class="stats">Cap&nbsp;&nbsp;&nbsp;</span><span id="vod-capacity">23</span><br>
+                                            <span class="stats">Load&nbsp;</span><span id="vod-capacity">10</span>%
                                         </div>
                                     </div>
                                 </div>
@@ -129,7 +130,8 @@
                                     <div class="col-xs-7">
                                         <div class="numbers">
                                             <p>Live</p>
-                                            <span id="live-capacity">40</span>
+                                            <span class="stats">Cap&nbsp;&nbsp;&nbsp;</span><span id="live-capacity">40</span>
+                                            <span class="stats">Load&nbsp;</span><span id="vod-capacity">10</span>%
                                         </div>
                                     </div>
                                 </div>
@@ -155,7 +157,8 @@
                                     <div class="col-xs-7">
                                         <div class="numbers">
                                             <p>Download</p>
-                                            <span id="download-capacity">10</span>
+                                            <span class="stats">Cap&nbsp;&nbsp;&nbsp;</span><span id="download-capacity">10</span>
+                                            <span class="stats">Load&nbsp;</span><span id="vod-capacity">10</span>%
                                         </div>
                                     </div>
                                 </div>
@@ -181,7 +184,8 @@
                                     <div class="col-xs-7">
                                         <div class="numbers">
                                             <p>Preview</p>
-                                            <span id="preview-capacity">23</span>
+                                            <span class="stats">Cap&nbsp;&nbsp;&nbsp;</span><span id="preview-capacity">23</span>
+                                            <span class="stats">Load&nbsp;</span><span id="vod-capacity">10</span>%
                                         </div>
                                     </div>
                                 </div>
@@ -277,7 +281,9 @@
         var dataPoints2 = [];
         var dataPoints3 = [];
         var dataPoints4 = [];
-        var chartType = "stepLine";
+        var chartType = "stackedColumn";
+        var dataPointsPerPage = 10;
+        var currentDataPoints = 0;
 
         var chart = new CanvasJS.Chart("chartContainer", {
             zoomEnabled: true,
@@ -356,6 +362,7 @@
         });
 
         var updateInterval = 3000;
+
         // initial value
         var yValue1 = 640;
         var yValue2 = 604;
@@ -381,12 +388,6 @@
 
             // add interval duration to time
             time.setTime(time.getTime() + updateInterval);
-
-            // generating random values
-            var deltaY1 = map['vod'];
-            var deltaY2 = map['live'];
-            var deltaY3 = map['download'];
-            var deltaY4 = map['preview'];
 
             // adding random value and rounding it to two digits.
             yValue1 = map['vod'];
@@ -419,6 +420,15 @@
             chart.options.data[3].legendText = " Preview " + yValue4;
 
             chart.render();
+
+            currentDataPoints++;
+            if (currentDataPoints > dataPointsPerPage) {
+                currentDataPoints = 0;
+                dataPoints1.shift();
+                dataPoints2.shift();
+                dataPoints3.shift();
+                dataPoints4.shift();
+            }
 
         };
 
