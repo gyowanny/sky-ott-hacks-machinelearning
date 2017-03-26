@@ -303,7 +303,7 @@
                 fontColor: "dimGrey"
             },
             axisX: {
-                title: "chart updates every 3 secs"
+                title: ""
             },
             axisY: {
                 prefix: '',
@@ -361,7 +361,7 @@
             }
         });
 
-        var updateInterval = 3000;
+        var updateInterval = 15000;
 
         // initial value
         var yValue1 = 640;
@@ -377,24 +377,6 @@
             console.log(data);
             //transform json in an array of instances per app
             var map = new Object();
-//            if (data) {
-//                $.each(data, function (i, item) {
-//                    var subMap = new Object();
-//                    subMap['vod'] = item.recomendedVodNodes;
-//                    subMap['live'] = item.recomendedLiveNodes;
-//                    subMap['download'] = item.recomendedDownloadNodes;
-//                    subMap['preview'] = item.recomendedPreviewNodes;
-//                    map[item.playingDate] = subMap;
-//
-//                });
-//            } else {
-//                var subMap = new Object();
-//                subMap['vod'] = 0;
-//                subMap['live'] = 0;
-//                subMap['download'] = 0;
-//                subMap['preview'] = 0;
-//                map[new Date()] = subMap;
-//            }
 
             // add interval duration to time
             time.setTime(time.getTime() + updateInterval);
@@ -402,7 +384,6 @@
             console.log(map);
 
             $.each(data, function (i, item) {
-                // adding random value and rounding it to two digits.
                 yValue1 = item.recomendedVodNodes;
                 yValue2 = item.recomendedLiveNodes;
                 yValue3 = item.recomendedDownloadNodes;
@@ -411,7 +392,8 @@
                 // pushing the new values
                 dataPoints1.push({
                     x: item.playingDate,
-                    y: yValue1
+                    y: yValue1,
+                    label: item.title
                 });
                 dataPoints2.push({
                     x: item.playingDate,
@@ -427,22 +409,13 @@
                 });
 
                 // updating legend text with  updated with y Value
-                chart.options.data[0].legendText = " VOD " + yValue1;
-                chart.options.data[1].legendText = " Live " + yValue2;
-                chart.options.data[2].legendText = " Download " + yValue3;
-                chart.options.data[3].legendText = " Preview " + yValue4;
+//                chart.options.data[0].legendText = " VOD " + yValue1;
+//                chart.options.data[1].legendText = " Live " + yValue2;
+//                chart.options.data[2].legendText = " Download " + yValue3;
+//                chart.options.data[3].legendText = " Preview " + yValue4;
             });
 
             chart.render();
-
-//            currentDataPoints++;
-//            if (currentDataPoints > dataPointsPerPage) {
-//                currentDataPoints = 0;
-//                dataPoints1.shift();
-//                dataPoints2.shift();
-//                dataPoints3.shift();
-//                dataPoints4.shift();
-//            }
 
         };
 
